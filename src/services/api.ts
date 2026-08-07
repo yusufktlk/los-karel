@@ -3,6 +3,12 @@ import { Article, articles } from "@/data/journal";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
+function getAuthHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const token = localStorage.getItem("los_karel_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function fetchProductsAPI(): Promise<Product[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/products`, { cache: "no-store" });
@@ -71,17 +77,23 @@ export async function processIyzicoPaymentAPI(paymentPayload: {
 
 export async function fetchAdminStatsAPI() {
   try {
-    const res = await fetch(`${API_BASE_URL}/admin/stats`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE_URL}/admin/stats`, {
+      cache: "no-store",
+      headers: getAuthHeader(),
+    });
     if (!res.ok) throw new Error("API error");
     return await res.json();
   } catch {
-    return { totalOrders: 0, totalProducts: 2, totalUsers: 1, totalRevenue: 0 };
+    return null;
   }
 }
 
 export async function fetchAdminOrdersAPI() {
   try {
-    const res = await fetch(`${API_BASE_URL}/admin/orders`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE_URL}/admin/orders`, {
+      cache: "no-store",
+      headers: getAuthHeader(),
+    });
     if (!res.ok) throw new Error("API error");
     return await res.json();
   } catch {
@@ -93,7 +105,7 @@ export async function updateOrderStatusAPI(orderId: string, status: string) {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/orders/${orderId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...getAuthHeader() },
       body: JSON.stringify({ status }),
     });
     return await res.json();

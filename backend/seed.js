@@ -1,8 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding LOS KAREL database...");
+  console.log("Seeding LOS KAREL database with Admin user...");
 
   // Clear existing
   await prisma.orderItem.deleteMany();
@@ -10,6 +11,19 @@ async function main() {
   await prisma.product.deleteMany();
   await prisma.collection.deleteMany();
   await prisma.journalArticle.deleteMany();
+  await prisma.user.deleteMany();
+
+  // Create Default Admin User
+  const hashedAdminPassword = await bcrypt.hash("admin123456", 10);
+  const adminUser = await prisma.user.create({
+    data: {
+      email: "admin@loskarel.com",
+      password: hashedAdminPassword,
+      name: "LOS KAREL Admin",
+      role: "ADMIN",
+    },
+  });
+  console.log(`✓ Admin user created: ${adminUser.email}`);
 
   // Seed Collection
   const heritageCollection = await prisma.collection.create({

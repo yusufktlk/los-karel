@@ -3,6 +3,7 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Iyzipay = require("iyzipay");
+const rateLimit = require("express-rate-limit");
 const { PrismaClient } = require("@prisma/client");
 
 const app = express();
@@ -19,6 +20,40 @@ const iyzipay = new Iyzipay({
 
 app.use(cors());
 app.use(express.json());
+
+// ── SECURITY & RATE LIMITING ──
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  message: { error: "Too many requests from this IP, please try again later." },
+});
+app.use("/api/", apiLimiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: "Too many login attempts, please try again after 15 minutes." },
+});
+
+// Middleware: Verify Admin JWT Token & Role
+function verifyAdminToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized: Missing or invalid token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== "ADMIN") {
+      return res.status(403).json({ error: "Forbidden: Admin privileges required" });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or expired token" });
+  }
+}
 
 // Helper to resolve product UUID by ID, Slug or Name
 async function resolveProductId(item) {
@@ -40,14 +75,13 @@ async function resolveProductId(item) {
 
   if (found) return found.id;
 
-  // Fallback: If no match found, pick the first product in DB so no order item is ever dropped
   const fallback = await prisma.product.findFirst();
   return fallback ? fallback.id : null;
 }
 
 // Healthcheck
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", brand: "LOS KAREL API v1.0", iyzico: "enabled" });
+  res.json({ status: "ok", brand: "LOS KAREL API v1.0", iyzico: "enabled", security: "hardened" });
 });
 
 // ── PRODUCTS ──
@@ -254,7 +288,6 @@ app.post("/api/payment/checkout", async (req, res) => {
     };
 
     iyzipay.payment.create(request, async (err, result) => {
-      // Create Order with all resolved items
       const newOrder = await prisma.order.create({
         data: {
           totalAmount,
@@ -276,8 +309,8 @@ app.post("/api/payment/checkout", async (req, res) => {
   }
 });
 
-// ── ADMIN ENDPOINTS ──
-app.get("/api/admin/stats", async (req, res) => {
+// ── PROTECTED ADMIN ENDPOINTS (RBAC & JWT REQUIRED) ──
+app.get("/api/admin/stats", verifyAdminToken, async (req, res) => {
   try {
     const totalOrders = await prisma.order.count();
     const totalProducts = await prisma.product.count();
@@ -300,7 +333,7 @@ app.get("/api/admin/stats", async (req, res) => {
   }
 });
 
-app.get("/api/admin/orders", async (req, res) => {
+app.get("/api/admin/orders", verifyAdminToken, async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: "desc" },
@@ -322,7 +355,7 @@ app.get("/api/admin/orders", async (req, res) => {
   }
 });
 
-app.put("/api/admin/orders/:id", async (req, res) => {
+app.put("/api/admin/orders/:id", verifyAdminToken, async (req, res) => {
   try {
     const { status } = req.body;
     const order = await prisma.order.update({
@@ -336,7 +369,7 @@ app.put("/api/admin/orders/:id", async (req, res) => {
 });
 
 // ── AUTH ──
-app.post("/api/auth/register", async (req, res) => {
+app.post("/api/auth/register", authLimiter, async (req, res) => {
   try {
     const { email, password, name } = req.body;
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -344,20 +377,20 @@ app.post("/api/auth/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name },
+      data: { email, password: hashedPassword, name, role: "USER" },
     });
 
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name } });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.post("/api/auth/login", async (req, res) => {
+app.post("/api/auth/login", authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
@@ -370,12 +403,12 @@ app.post("/api/auth/login", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 LOS KAREL Backend API with iyzipay running on http://localhost:${PORT}`);
+  console.log(`🚀 LOS KAREL Secured Backend API running on http://localhost:${PORT}`);
 });

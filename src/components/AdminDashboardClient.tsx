@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import { fetchAdminStatsAPI, fetchAdminOrdersAPI, updateOrderStatusAPI, fetchProductsAPI } from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
 import { Product } from "@/data/products";
 
 export default function AdminDashboardClient() {
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+
   const [activeTab, setActiveTab] = useState<"orders" | "products">("orders");
   const [stats, setStats] = useState({ totalOrders: 0, totalProducts: 2, totalUsers: 1, totalRevenue: 0 });
   const [orders, setOrders] = useState<any[]>([]);
@@ -13,6 +18,13 @@ export default function AdminDashboardClient() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Route guard: Redirect if not logged in or not ADMIN
+    const savedUser = JSON.parse(localStorage.getItem("los_karel_user") || "{}");
+    if (!isAuthenticated && savedUser.role !== "ADMIN") {
+      router.push("/admin/login");
+      return;
+    }
+
     async function loadAdminData() {
       setLoading(true);
       const [sData, oData, pData] = await Promise.all([
@@ -26,7 +38,7 @@ export default function AdminDashboardClient() {
       setLoading(false);
     }
     loadAdminData();
-  }, []);
+  }, [isAuthenticated, router]);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     setOrders((prev) =>
@@ -56,7 +68,7 @@ export default function AdminDashboardClient() {
           <div>
             <div className="eyebrow anim-fade-in">
               <div className="eyebrow-line" />
-              <span className="eyebrow-text">YÖNETİM KONTROL PANELİ</span>
+              <span className="eyebrow-text">GÜVENLİ YÖNETİM KONTROL PANELİ</span>
             </div>
             <h1 className="anim-fade-up d1" style={{ fontFamily: "var(--font-title)", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400 }}>
               LOS KAREL Admin

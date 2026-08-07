@@ -82,7 +82,10 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
         {/* Search Input Bar */}
         <div style={{ position: "relative", borderBottom: "1px solid var(--clr-gold)", paddingBottom: "1rem", marginBottom: "3rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontSize: "1.5rem", color: "var(--clr-gold)" }}>🔍</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--clr-gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
             <input
               ref={inputRef}
               type="text"

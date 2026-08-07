@@ -1,0 +1,131 @@
+OS KAREL - Technical & Product Design
+Document v2
+Brand Vision
+LOS KAREL is envisioned as a premium contemporary clothing label where every
+garment is treated as a collectible design object rather than a commodity.The digital
+experience must communicate elegance, restraint and craftsmanship.The website
+should feel closer to a luxury editorial magazine than a traditional marketplace.
+    Typography, whitespace, photography and motion should reinforce the perception of
+quality.LOS KAREL is envisioned as a premium contemporary clothing label where
+every garment is treated as a collectible design object rather than a commodity.The
+digital experience must communicate elegance, restraint and craftsmanship.The
+website should feel closer to a luxury editorial magazine than a traditional
+marketplace.Typography, whitespace, photography and motion should reinforce the
+perception of quality.LOS KAREL is envisioned as a premium contemporary clothing
+label where every garment is treated as a collectible design object rather than a
+commodity.The digital experience must communicate elegance, restraint and
+craftsmanship.The website should feel closer to a luxury editorial magazine than a
+traditional marketplace.Typography, whitespace, photography and motion should
+reinforce the perception of quality.
+Brand Identity
+Collections are inspired by cultural narratives including Anatolian heritage, Japanese
+aesthetics, Nordic mythology, Brutalism, nature, mosaics and modern graphic art.The
+front of garments remains minimal with a subtle logo while the back contains the
+storytelling artwork.The website must mirror this philosophy through clean layouts and
+immersive product pages.Collections are inspired by cultural narratives including
+Anatolian heritage, Japanese aesthetics, Nordic mythology, Brutalism, nature, mosaics
+and modern graphic art.The front of garments remains minimal with a subtle logo
+while the back contains the storytelling artwork.The website must mirror this
+philosophy through clean layouts and immersive product pages.Collections are inspired
+by cultural narratives including Anatolian heritage, Japanese aesthetics, Nordic
+mythology, Brutalism, nature, mosaics and modern graphic art.The front of garments
+remains minimal with a subtle logo while the back contains the storytelling artwork.
+The website must mirror this philosophy through clean layouts and immersive product
+pages.
+Design Principles
+Use generous whitespace, muted color palettes, premium serif and sans - serif
+typography, subtle animations, grid - based composition, large imagery, accessible
+contrast, responsive layouts and consistent spacing tokens.Avoid visual noise,
+    excessive gradients or intrusive marketing banners.Use generous whitespace, muted
+color palettes, premium serif and sans - serif typography, subtle animations, grid - based
+composition, large imagery, accessible contrast, responsive layouts and consistent
+spacing tokens.Avoid visual noise, excessive gradients or intrusive marketing
+banners.Use generous whitespace, muted color palettes, premium serif and sans - serif
+typography, subtle animations, grid - based composition, large imagery, accessible
+contrast, responsive layouts and consistent spacing tokens.Avoid visual noise,
+    excessive gradients or intrusive marketing banners.
+Technical Architecture
+Frontend: Next.js App Router with TypeScript, Tailwind CSS and a custom component
+library.Backend: NestJS with Prisma ORM and PostgreSQL.Redis for caching.
+Cloudinary for media.Stripe and iyzico payments.Vercel, Railway and Neon for
+deployment.Frontend: Next.js App Router with TypeScript, Tailwind CSS and a custom
+component library.Backend: NestJS with Prisma ORM and PostgreSQL.Redis for
+caching.Cloudinary for media.Stripe and iyzico payments.Vercel, Railway and Neon
+for deployment.Frontend: Next.js App Router with TypeScript, Tailwind CSS and a
+custom component library.Backend: NestJS with Prisma ORM and PostgreSQL.Redis
+for caching.Cloudinary for media.Stripe and iyzico payments.Vercel, Railway and
+Neon for deployment.
+    Frontend
+Use Server Components wherever possible, Client Components only for interactivity,
+    image optimization, ISR, metadata API, structured data, lazy loading, route groups,
+        parallel routes, error boundaries, loading states and responsive image galleries.Use
+Server Components wherever possible, Client Components only for interactivity, image
+optimization, ISR, metadata API, structured data, lazy loading, route groups, parallel
+routes, error boundaries, loading states and responsive image galleries.Use Server
+Components wherever possible, Client Components only for interactivity, image
+optimization, ISR, metadata API, structured data, lazy loading, route groups, parallel
+routes, error boundaries, loading states and responsive image galleries.
+    Backend
+Modular architecture including Auth, Users, Products, Variants, Inventory, Orders,
+    Payments, Reviews, Wishlist, Coupons, Analytics, Notifications and Admin.JWT
+authentication with refresh tokens, RBAC authorization, audit logging and
+validation.Modular architecture including Auth, Users, Products, Variants, Inventory,
+    Orders, Payments, Reviews, Wishlist, Coupons, Analytics, Notifications and Admin.JWT
+authentication with refresh tokens, RBAC authorization, audit logging and
+validation.Modular architecture including Auth, Users, Products, Variants, Inventory,
+    Orders, Payments, Reviews, Wishlist, Coupons, Analytics, Notifications and Admin.JWT
+authentication with refresh tokens, RBAC authorization, audit logging and validation.
+    Database
+Normalized relational schema covering users, addresses, products, collections,
+    categories, variants, inventory, carts, orders, payments, media, reviews, wishlists,
+    coupons, shipping, returns, notifications and audit logs.All foreign keys indexed.Soft
+deletes for business entities.Normalized relational schema covering users, addresses,
+    products, collections, categories, variants, inventory, carts, orders, payments, media,
+    reviews, wishlists, coupons, shipping, returns, notifications and audit logs.All foreign
+keys indexed.Soft deletes for business entities.Normalized relational schema covering
+users, addresses, products, collections, categories, variants, inventory, carts, orders,
+    payments, media, reviews, wishlists, coupons, shipping, returns, notifications and audit
+logs.All foreign keys indexed.Soft deletes for business entities.
+Admin Panel
+Dashboard, analytics, product editor, drag - and - drop gallery ordering, inventory
+management, customer management, order workflow, coupon generation, SEO editor,
+    collection management, media library and role management.Dashboard, analytics,
+        product editor, drag - and - drop gallery ordering, inventory management, customer
+management, order workflow, coupon generation, SEO editor, collection management,
+    media library and role management.Dashboard, analytics, product editor,
+        drag - and - drop gallery ordering, inventory management, customer management, order
+workflow, coupon generation, SEO editor, collection management, media library and
+role management.
+    Performance
+Cloudflare CDN, responsive images, Redis cache, pagination, query optimization, code
+splitting, HTTP compression, prefetching, database indexing and monitoring with
+Sentry and Grafana.Cloudflare CDN, responsive images, Redis cache, pagination, query
+optimization, code splitting, HTTP compression, prefetching, database indexing and
+monitoring with Sentry and Grafana.Cloudflare CDN, responsive images, Redis cache,
+    pagination, query optimization, code splitting, HTTP compression, prefetching,
+        database indexing and monitoring with Sentry and Grafana.
+            Security
+HTTPS everywhere, CSP, CSRF protection, XSS mitigation, SQL injection prevention
+through Prisma, password hashing with Argon2, rate limiting, secure cookies,
+    encrypted secrets, automated backups and disaster recovery.HTTPS everywhere, CSP,
+        CSRF protection, XSS mitigation, SQL injection prevention through Prisma, password
+hashing with Argon2, rate limiting, secure cookies, encrypted secrets, automated
+backups and disaster recovery.HTTPS everywhere, CSP, CSRF protection, XSS
+mitigation, SQL injection prevention through Prisma, password hashing with Argon2,
+rate limiting, secure cookies, encrypted secrets, automated backups and disaster
+recovery.
+    Roadmap
+Phase 1: ecommerce MVP.Phase 2: journal, lookbook, multilingual support and
+international shipping.Phase 3: mobile applications, loyalty system, AI
+recommendations, personalization, virtual try-on and advanced analytics.Phase 1:
+ecommerce MVP.Phase 2: journal, lookbook, multilingual support and international
+shipping.Phase 3: mobile applications, loyalty system, AI recommendations,
+    personalization, virtual try-on and advanced analytics.Phase 1: ecommerce MVP.Phase
+2: journal, lookbook, multilingual support and international shipping.Phase 3: mobile
+applications, loyalty system, AI recommendations, personalization, virtual try-on and
+advanced analytics.
+    Appendix
+This document is intended as the foundation for a complete Software Requirements
+Specification(SRS) and Software Design Document(SDD).A production - ready version
+would further include C4 architecture diagrams, ER diagrams, API contracts, OpenAPI
+specifications, CI / CD pipelines, infrastructure diagrams, accessibility guidelines, coding

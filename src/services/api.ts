@@ -50,6 +50,25 @@ export async function createOrderAPI(orderData: {
   }
 }
 
+export async function processIyzicoPaymentAPI(paymentPayload: {
+  cardInfo: { cardNumber: string; expDate: string; cvc: string };
+  customerInfo: any;
+  items: any[];
+  totalAmount: number;
+}) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/payment/checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(paymentPayload),
+    });
+    if (!res.ok) throw new Error("Payment API error");
+    return await res.json();
+  } catch (err) {
+    return { status: "error", message: "iyzico ödeme sunucusuna bağlanılamadı" };
+  }
+}
+
 export async function fetchAdminStatsAPI() {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/stats`, { cache: "no-store" });

@@ -5,11 +5,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { createOrderAPI } from "@/services/api";
+import { processIyzicoPaymentAPI } from "@/services/api";
+import { useToast } from "@/context/ToastContext";
 
 export default function CheckoutClient() {
   const { cart, totalPrice } = useCart();
   const { t } = useLanguage();
+  const { showToast } = useToast();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export default function CheckoutClient() {
     address: "",
     city: "",
     postalCode: "",
-    cardNumber: "4543 •••• •••• 1234",
+    cardNumber: "4543 6000 0000 0001",
     expDate: "12/28",
     cvc: "888",
   });
@@ -35,15 +37,23 @@ export default function CheckoutClient() {
 
     setLoading(true);
 
-    const orderPayload = {
+    const paymentPayload = {
+      cardInfo: {
+        cardNumber: formData.cardNumber,
+        expDate: formData.expDate,
+        cvc: formData.cvc,
+      },
       customerInfo: {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        address: `${formData.address}, ${formData.city} ${formData.postalCode}`,
+        address: formData.address,
+        city: formData.city,
+        postalCode: formData.postalCode,
       },
       items: cart.map((item) => ({
         productId: item.product.id,
+        name: item.product.name,
         size: item.size,
         quantity: item.quantity,
         price: item.product.price,
@@ -51,13 +61,18 @@ export default function CheckoutClient() {
       totalAmount: totalPrice,
     };
 
-    const res = await createOrderAPI(orderPayload);
-    const orderId = res?.orderId || `LK-${Math.floor(100000 + Math.random() * 900000)}`;
+    const res = await processIyzicoPaymentAPI(paymentPayload);
 
-    setTimeout(() => {
+    if (res?.status === "success" && res?.orderId) {
+      showToast("iyzico ödemesi başarıyla onaylandı!");
+      setTimeout(() => {
+        setLoading(false);
+        router.push(`/order-confirmation/${res.orderId}`);
+      }, 800);
+    } else {
       setLoading(false);
-      router.push(`/order-confirmation/${orderId}`);
-    }, 1200);
+      showToast(res?.message || "iyzico Ödeme hatası oluştu.");
+    }
   };
 
   if (cart.length === 0) {
@@ -116,7 +131,7 @@ export default function CheckoutClient() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Jane Doe"
+                      placeholder="Ahmet Yılmaz"
                       style={{
                         width: "100%",
                         padding: "0.9rem 1rem",
@@ -141,7 +156,7 @@ export default function CheckoutClient() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="jane@example.com"
+                        placeholder="ahmet@example.com"
                         style={{
                           width: "100%",
                           padding: "0.9rem 1rem",
@@ -255,22 +270,37 @@ export default function CheckoutClient() {
                 </div>
               </div>
 
-              {/* 2. Payment Details */}
+              {/* 2. iyzico Payment Details */}
               <div className="detail-block" style={{ padding: "2rem" }}>
-                <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1rem", fontWeight: 500, letterSpacing: "0.15em", color: "var(--clr-gold)", marginBottom: "1.5rem" }}>
-                  {t("paymentInfoTitle")}
-                </h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1rem", fontWeight: 500, letterSpacing: "0.15em", color: "var(--clr-gold)" }}>
+                    2. Kredi / Banka Kartı ile Öde
+                  </h3>
+                  <span style={{
+                    fontFamily: "var(--font-title)",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.15em",
+                    background: "rgba(196, 168, 124, 0.15)",
+                    border: "1px solid var(--clr-gold)",
+                    color: "var(--clr-gold)",
+                    padding: "0.3rem 0.6rem"
+                  }}>
+                    🔒 iyzico 3D Secure Protected
+                  </span>
+                </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                   <div>
                     <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
-                      {t("cardNumberLabel")}
+                      {t("cardNumberLabel")} *
                     </label>
                     <input
                       type="text"
                       name="cardNumber"
+                      required
                       value={formData.cardNumber}
                       onChange={handleChange}
+                      placeholder="4543 6000 0000 0001"
                       style={{
                         width: "100%",
                         padding: "0.9rem 1rem",
@@ -287,13 +317,15 @@ export default function CheckoutClient() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                     <div>
                       <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
-                        {t("expDateLabel")}
+                        {t("expDateLabel")} *
                       </label>
                       <input
                         type="text"
                         name="expDate"
+                        required
                         value={formData.expDate}
                         onChange={handleChange}
+                        placeholder="12/28"
                         style={{
                           width: "100%",
                           padding: "0.9rem 1rem",
@@ -308,13 +340,15 @@ export default function CheckoutClient() {
                     </div>
                     <div>
                       <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
-                        {t("cvcLabel")}
+                        {t("cvcLabel")} *
                       </label>
                       <input
                         type="text"
                         name="cvc"
+                        required
                         value={formData.cvc}
                         onChange={handleChange}
+                        placeholder="888"
                         style={{
                           width: "100%",
                           padding: "0.9rem 1rem",
@@ -380,7 +414,7 @@ export default function CheckoutClient() {
                 className="btn btn-solid"
                 style={{ width: "100%", padding: "1.2rem" }}
               >
-                <span>{loading ? t("processingOrder") : t("placeOrderBtn")}</span>
+                <span>{loading ? "iyzico Ödemesi Yapılıyor..." : "iyzico Güvenli Ödeme Yap →"}</span>
               </button>
             </div>
 

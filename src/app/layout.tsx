@@ -17,6 +17,11 @@ export const metadata: Metadata = {
     "luxury streetwear",
     "collectible fashion",
   ],
+  icons: {
+    icon: "/logo/logo.png",
+    shortcut: "/logo/logo.png",
+    apple: "/logo/logo.png",
+  },
   openGraph: {
     title: "LOS KAREL — Rooted in Heritage, Made for Today",
     description:

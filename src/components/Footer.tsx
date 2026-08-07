@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
@@ -12,9 +11,8 @@ export default function Footer() {
         <div className="footer-grid">
           {/* Brand */}
           <div>
-            <Link href="/">
-              <Image src="/logo/logo.png" alt="LOS KAREL" width={52} height={52}
-                style={{ borderRadius: "50%", objectFit: "contain", marginBottom: "1.25rem" }} />
+            <Link href="/" className="nav-logo" style={{ display: "inline-block", marginBottom: "1.25rem" }}>
+              LOS KAREL
             </Link>
             <p className="footer-desc">
               {t("footerDesc")}
@@ -32,7 +30,7 @@ export default function Footer() {
           {/* Info */}
           <div>
             <p className="footer-label">{t("footerInfoTitle")}</p>
-            {[t("footerShip"), t("footerReturn"), t("footerSize"), t("footerCare")].map(i => (
+            {[t("footerShip"), t("footerReturn"), t("footerSize"), t("footerCare")].map((i) => (
               <span key={i} className="footer-link" style={{ cursor: "default" }}>{i}</span>
             ))}
           </div>
@@ -44,8 +42,12 @@ export default function Footer() {
               {t("footerConnectDesc")}
             </p>
             <div className="newsletter-wrap">
-              <input type="email" placeholder={t("newsletterInputPlaceholder")}
-                className="newsletter-input" aria-label="Email for newsletter" />
+              <input
+                type="email"
+                placeholder={t("newsletterInputPlaceholder")}
+                className="newsletter-input"
+                aria-label="Email for newsletter"
+              />
               <button className="newsletter-btn">→</button>
             </div>
           </div>
@@ -53,18 +55,34 @@ export default function Footer() {
       </div>
 
       <div className="container">
-        <div className="footer-bottom">
+        <div className="footer-bottom" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <span className="footer-copy">© {new Date().getFullYear()} LOS KAREL. {t("footerRights")}</span>
-          <div style={{ display: "flex", gap: "1.5rem" }}>
-            <a href="https://instagram.com/loskarel" target="_blank" rel="noopener noreferrer"
-              className="footer-link" style={{ marginBottom: 0 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          
+          {/* Centered Instagram Icon Only */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <a
+              href="https://instagram.com/los.karel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link"
+              title="Instagram: @los.karel"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 0,
+                color: "var(--clr-gold)",
+                textDecoration: "none"
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="2" y="2" width="20" height="20" rx="5" />
                 <circle cx="12" cy="12" r="5" />
                 <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
               </svg>
             </a>
           </div>
+
           <span className="footer-copy">EST. MMXXVI</span>
         </div>
       </div>

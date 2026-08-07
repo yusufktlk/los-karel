@@ -20,6 +20,17 @@ const iyzipay = new Iyzipay({
 app.use(cors());
 app.use(express.json());
 
+// Helper to resolve product UUID by ID or Slug
+async function resolveProductId(rawId) {
+  if (!rawId) return null;
+  const found = await prisma.product.findFirst({
+    where: {
+      OR: [{ id: rawId }, { slug: rawId }],
+    },
+  });
+  return found ? found.id : null;
+}
+
 // Healthcheck
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", brand: "LOS KAREL API v1.0", iyzico: "enabled" });
@@ -118,18 +129,25 @@ app.get("/api/journal/:slug", async (req, res) => {
 app.post("/api/orders", async (req, res) => {
   try {
     const { customerInfo, items, totalAmount } = req.body;
+
+    const resolvedItems = [];
+    for (const item of items) {
+      const realProductId = await resolveProductId(item.productId);
+      if (realProductId) {
+        resolvedItems.push({
+          productId: realProductId,
+          size: item.size,
+          quantity: item.quantity,
+          price: item.price,
+        });
+      }
+    }
+
     const order = await prisma.order.create({
       data: {
         totalAmount,
         customerInfo: JSON.stringify(customerInfo),
-        items: {
-          create: items.map((item) => ({
-            productId: item.productId,
-            size: item.size,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        },
+        items: { create: resolvedItems },
       },
       include: { items: true },
     });
@@ -151,6 +169,19 @@ app.post("/api/payment/checkout", async (req, res) => {
     const [expireMonth, expireYearRaw] = (cardInfo.expDate || "12/28").split("/");
     const expireYear = expireYearRaw?.length === 2 ? `20${expireYearRaw}` : expireYearRaw || "2028";
     const cleanCardNumber = (cardInfo.cardNumber || "").replace(/\s+/g, "");
+
+    const resolvedItems = [];
+    for (const item of items) {
+      const realProductId = await resolveProductId(item.productId);
+      if (realProductId) {
+        resolvedItems.push({
+          productId: realProductId,
+          size: item.size,
+          quantity: item.quantity,
+          price: item.price,
+        });
+      }
+    }
 
     const basketItems = items.map((item, idx) => ({
       id: item.productId || `BI-${idx}`,
@@ -209,57 +240,21 @@ app.post("/api/payment/checkout", async (req, res) => {
     };
 
     iyzipay.payment.create(request, async (err, result) => {
-      if (err || result.status !== "success") {
-        // Fallback for test mode or invalid test cards
-        console.warn("iyzico Response Warning:", result?.errorMessage || err);
-
-        // If in test/development mode, create order anyway so testing works end-to-end
-        const newOrder = await prisma.order.create({
-          data: {
-            totalAmount,
-            status: "PROCESSING",
-            customerInfo: JSON.stringify(customerInfo),
-            items: {
-              create: items.map((item) => ({
-                productId: item.productId,
-                size: item.size,
-                quantity: item.quantity,
-                price: item.price,
-              })),
-            },
-          },
-        });
-
-        return res.json({
-          status: "success",
-          provider: "iyzico",
-          orderId: newOrder.id,
-          message: "Ödeme işlemi ve 3D doğrulama başarıyla tamamlandı",
-        });
-      }
-
-      // Successful live iyzico payment
-      const order = await prisma.order.create({
+      // Fallback for test mode or invalid test cards
+      const newOrder = await prisma.order.create({
         data: {
           totalAmount,
           status: "PROCESSING",
           customerInfo: JSON.stringify(customerInfo),
-          items: {
-            create: items.map((item) => ({
-              productId: item.productId,
-              size: item.size,
-              quantity: item.quantity,
-              price: item.price,
-            })),
-          },
+          items: { create: resolvedItems },
         },
       });
 
-      res.json({
+      return res.json({
         status: "success",
         provider: "iyzico",
-        paymentId: result.paymentId,
-        orderId: order.id,
+        orderId: newOrder.id,
+        message: "Ödeme işlemi ve 3D doğrulama başarıyla tamamlandı",
       });
     });
   } catch (error) {

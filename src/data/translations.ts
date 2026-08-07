@@ -8,6 +8,8 @@ export const dictionary = {
     navAbout: "Hakkımızda",
     navShop: "Mağaza",
     navWishlist: "Favoriler",
+    navAccount: "Hesabım",
+    navLogin: "Giriş Yap",
     navContact: "İletişim",
 
     // Hero
@@ -81,6 +83,20 @@ export const dictionary = {
     wishlistTitle: "Favorilerim",
     wishlistEmptyTitle: "FAVORİ LİSTENİZ BOŞ",
     wishlistEmptyDesc: "Beğendiğiniz parçaları kartların üzerindeki kalp ikonuna tıklayarak listenize ekleyebilirsiniz.",
+
+    // Auth & Account Page
+    authEyebrow: "ÜYE KONTROLÜ",
+    loginTitle: "Giriş Yap",
+    registerTitle: "Hesap Oluştur",
+    loginBtn: "Oturum Aç →",
+    registerBtn: "Kayıt Ol →",
+    noAccountPrompt: "Henüz hesabınız yok mu?",
+    hasAccountPrompt: "Zaten hesabınız var mı?",
+    accountEyebrow: "ÖZEL ÜYE PORTALI",
+    accountTitle: "Hesabım",
+    orderHistoryTitle: "Geçmiş Siparişlerim",
+    noOrdersMessage: "Henüz verilmiş bir siparişiniz bulunmamaktadır.",
+    logoutBtn: "Oturumu Kapat",
 
     // Checkout Page
     checkoutEyebrow: "GÜVENLİ ÖDEME & SIPARİŞ",
@@ -183,6 +199,8 @@ export const dictionary = {
     navAbout: "About",
     navShop: "Shop",
     navWishlist: "Wishlist",
+    navAccount: "Account",
+    navLogin: "Sign In",
     navContact: "Contact",
 
     // Hero
@@ -256,6 +274,20 @@ export const dictionary = {
     wishlistTitle: "Wishlist",
     wishlistEmptyTitle: "YOUR WISHLIST IS EMPTY",
     wishlistEmptyDesc: "Save pieces you admire by clicking the heart icon on product cards.",
+
+    // Auth & Account Page
+    authEyebrow: "MEMBERSHIP",
+    loginTitle: "Sign In",
+    registerTitle: "Create Account",
+    loginBtn: "Sign In →",
+    registerBtn: "Register →",
+    noAccountPrompt: "Don't have an account yet?",
+    hasAccountPrompt: "Already have an account?",
+    accountEyebrow: "PRIVATE MEMBER PORTAL",
+    accountTitle: "My Account",
+    orderHistoryTitle: "Order History",
+    noOrdersMessage: "You have no past orders yet.",
+    logoutBtn: "Sign Out",
 
     // Checkout Page
     checkoutEyebrow: "SECURE CHECKOUT & ORDER",

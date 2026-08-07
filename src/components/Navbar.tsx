@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -11,6 +12,7 @@ export default function Navbar() {
   const { lang, setLang, t } = useLanguage();
   const { openCart, totalItems } = useCart();
   const { totalWishlistItems } = useWishlist();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -58,8 +60,20 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Right Navigation Links: Wishlist, Shop & Language */}
+          {/* Right Navigation Links: Wishlist, Account/Login, Shop & Language */}
           <div className="nav-links" style={{ gap: "1.25rem" }}>
+            
+            {/* Account / Login Link */}
+            <Link href={isAuthenticated ? "/account" : "/login"} className="nav-link-item" style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span style={{ fontSize: "0.68rem" }}>
+                {isAuthenticated ? (user?.name ? user.name.split(" ")[0] : t("navAccount")) : t("navLogin")}
+              </span>
+            </Link>
+
             {/* Wishlist Link */}
             <Link href="/wishlist" className="nav-link-item" style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
               <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
@@ -191,6 +205,9 @@ export default function Navbar() {
         <Link href="/collection" onClick={() => setOpen(false)}>{t("navCollection")}</Link>
         <Link href="/journal" onClick={() => setOpen(false)}>{t("navJournal")}</Link>
         <Link href="/about" onClick={() => setOpen(false)}>{t("navAbout")}</Link>
+        <Link href={isAuthenticated ? "/account" : "/login"} onClick={() => setOpen(false)}>
+          {isAuthenticated ? t("navAccount") : t("navLogin")}
+        </Link>
         <Link href="/wishlist" onClick={() => setOpen(false)}>{t("navWishlist")} ({totalWishlistItems})</Link>
         
         <button

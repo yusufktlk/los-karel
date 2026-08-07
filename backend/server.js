@@ -173,6 +173,37 @@ app.get("/api/journal/:slug", async (req, res) => {
   }
 });
 
+// ── USER ORDERS ENDPOINT (Public by email query) ──
+app.get("/api/user/orders", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.json([]);
+
+    const orders = await prisma.order.findMany({
+      where: {
+        customerInfo: {
+          contains: String(email).trim().toLowerCase(),
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        items: {
+          include: { product: true },
+        },
+      },
+    });
+
+    const formatted = orders.map((o) => ({
+      ...o,
+      customerInfo: JSON.parse(o.customerInfo),
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ── ORDERS ──
 app.post("/api/orders", async (req, res) => {
   try {

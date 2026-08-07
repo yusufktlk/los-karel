@@ -75,6 +75,18 @@ export async function processIyzicoPaymentAPI(paymentPayload: {
   }
 }
 
+export async function fetchUserOrdersAPI(email: string) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/user/orders?email=${encodeURIComponent(email)}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("API error");
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchAdminStatsAPI() {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/stats`, {

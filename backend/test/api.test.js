@@ -29,7 +29,7 @@ function request(path, options = {}) {
 }
 
 async function runTests() {
-  console.log("⚡ Starting Automated Functionality & Multi-Item Order Tests...\n");
+  console.log("⚡ Starting Automated Functionality, User Orders & Multi-Item Order Tests...\n");
 
   try {
     // 1. Healthcheck
@@ -41,11 +41,12 @@ async function runTests() {
     console.log(`✓ Test 2: Products API -> PASSED (Found ${products.body.length} products)`);
 
     // 3. Multi-Item Checkout (2 Different T-Shirts)
+    const testEmail = `user.${Date.now()}@loskarel.com`;
     const multiItemPayload = {
       cardInfo: { cardNumber: "4543600000000001", expDate: "12/28", cvc: "888" },
       customerInfo: {
-        name: "Test Müşteri",
-        email: "test.customer@loskarel.com",
+        name: "Ahmet Yılmaz",
+        email: testEmail,
         phone: "+905321112233",
         address: "Nişantaşı Mah. No: 10",
         city: "İstanbul",
@@ -79,17 +80,17 @@ async function runTests() {
 
     console.log("✓ Test 3: Multi-Item Checkout API ->", checkoutRes.body.status === "success" ? "PASSED" : "FAILED", `(Order ID: ${checkoutRes.body.orderId})`);
 
-    // 4. Admin Orders Verification
-    const adminOrders = await request("/api/admin/orders");
-    const latestOrder = adminOrders.body.find((o) => o.id === checkoutRes.body.orderId);
+    // 4. User Orders API Check (/api/user/orders?email=...)
+    const userOrdersRes = await request(`/api/user/orders?email=${encodeURIComponent(testEmail)}`);
+    const createdUserOrder = userOrdersRes.body.find((o) => o.id === checkoutRes.body.orderId);
 
-    if (latestOrder && latestOrder.items.length === 2) {
-      console.log(`✓ Test 4: Admin Orders Multi-Item Integrity -> PASSED (${latestOrder.items.length} items correctly persisted for Order #${latestOrder.id})`);
+    if (createdUserOrder && createdUserOrder.items.length === 2) {
+      console.log(`✓ Test 4: User Profile Orders API Integrity -> PASSED (${createdUserOrder.items.length} items correctly returned for ${testEmail})`);
     } else {
-      console.error(`❌ Test 4 FAILED: Expected 2 items in admin order, but found ${latestOrder ? latestOrder.items.length : 0}`);
+      console.error(`❌ Test 4 FAILED: Could not retrieve user orders for ${testEmail}`);
     }
 
-    console.log("\n🎉 ALL BACKEND FUNCTIONALITY TESTS COMPLETED SUCCESSFULLY!");
+    console.log("\n🎉 ALL BACKEND & USER ORDERS TESTS COMPLETED SUCCESSFULLY!");
   } catch (err) {
     console.error("❌ Test Suite Error:", err);
   }

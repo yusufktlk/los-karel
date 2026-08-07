@@ -57,10 +57,10 @@ export default function AboutHeaderClient() {
           <div style={{ width: "3rem", height: "1px", background: "linear-gradient(-90deg, transparent, var(--clr-gold))" }} />
         </div>
 
-        {/* Headline: Hakkımızda & LOS KAREL on Separate Centered Lines */}
+        {/* Clean Single Headline: Hakkımızda / About */}
         <h1 className="anim-fade-up d1" style={{
           fontFamily: "var(--font-serif)",
-          fontSize: "clamp(2.8rem, 8vw, 6rem)",
+          fontSize: "clamp(3rem, 8vw, 6rem)",
           fontWeight: 400,
           letterSpacing: "0.06em",
           lineHeight: 1.1,
@@ -71,10 +71,6 @@ export default function AboutHeaderClient() {
           margin: "0 auto 1.5rem"
         }}>
           {t("aboutHeaderTitle")}
-          <br />
-          <span className="serif-italic gold-text" style={{ display: "inline-block", marginTop: "0.25rem" }}>
-            {t("aboutHeaderSubTitle") || "LOS KAREL"}
-          </span>
         </h1>
 
         {/* Subtitle */}

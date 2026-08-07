@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product } from "@/data/products";
+import { useToast } from "@/context/ToastContext";
 
 interface WishlistContextType {
   wishlist: Product[];
@@ -15,6 +16,7 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     try {
@@ -42,11 +44,16 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const addToWishlist = (product: Product) => {
     if (!isInWishlist(product.id)) {
       setWishlist((prev) => [...prev, product]);
+      showToast(`${product.name} favorilere eklendi`);
     }
   };
 
   const removeFromWishlist = (productId: string) => {
+    const item = wishlist.find((p) => p.id === productId);
     setWishlist((prev) => prev.filter((p) => p.id !== productId));
+    if (item) {
+      showToast(`${item.name} favorilerden çıkarıldı`);
+    }
   };
 
   const toggleWishlist = (product: Product) => {

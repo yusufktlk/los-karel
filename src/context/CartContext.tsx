@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product } from "@/data/products";
+import { useToast } from "@/context/ToastContext";
 
 export interface CartItem {
   product: Product;
@@ -12,12 +13,12 @@ interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product, size: string, quantity?: number) => void;
   removeFromCart: (productId: string, size: string) => void;
-  updateQuantity: (productId: string, size: string, delta: number) => void;
+  updateQuantity: (productId: string, size: string, quantity: number) => void;
   clearCart: () => void;
   isCartOpen: boolean;
-  setIsCartOpen: (open: boolean) => void;
   openCart: () => void;
   closeCart: () => void;
+  toggleCart: () => void;
   totalItems: number;
   totalPrice: number;
 }
@@ -27,6 +28,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     try {
@@ -35,7 +37,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCart(JSON.parse(saved));
       }
     } catch {
-      // ignore JSON parse errors
+      // ignore
     }
   }, []);
 
@@ -43,49 +45,54 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       localStorage.setItem("los_karel_cart", JSON.stringify(cart));
     } catch {
-      // ignore storage errors
+      // ignore
     }
   }, [cart]);
 
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+  const toggleCart = () => setIsCartOpen((prev) => !prev);
+
   const addToCart = (product: Product, size: string, quantity = 1) => {
     setCart((prev) => {
-      const existingIndex = prev.findIndex(
+      const index = prev.findIndex(
         (item) => item.product.id === product.id && item.size === size
       );
-      if (existingIndex > -1) {
-        const updated = [...prev];
-        updated[existingIndex].quantity += quantity;
-        return updated;
+      if (index > -1) {
+        const next = [...prev];
+        next[index].quantity += quantity;
+        return next;
       }
       return [...prev, { product, size, quantity }];
     });
-    setIsCartOpen(true);
+    showToast(`${product.name} (${size}) sepete eklendi`);
+    openCart();
   };
 
   const removeFromCart = (productId: string, size: string) => {
     setCart((prev) =>
       prev.filter((item) => !(item.product.id === productId && item.size === size))
     );
+    showToast("Ürün sepetten çıkarıldı");
   };
 
-  const updateQuantity = (productId: string, size: string, delta: number) => {
+  const updateQuantity = (productId: string, size: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId, size);
+      return;
+    }
     setCart((prev) =>
-      prev
-        .map((item) => {
-          if (item.product.id === productId && item.size === size) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean) as CartItem[]
+      prev.map((item) =>
+        item.product.id === productId && item.size === size
+          ? { ...item, quantity }
+          : item
+      )
     );
   };
 
-  const clearCart = () => setCart([]);
-
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
+  const clearCart = () => {
+    setCart([]);
+  };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce(
@@ -102,9 +109,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updateQuantity,
         clearCart,
         isCartOpen,
-        setIsCartOpen,
         openCart,
         closeCart,
+        toggleCart,
         totalItems,
         totalPrice,
       }}

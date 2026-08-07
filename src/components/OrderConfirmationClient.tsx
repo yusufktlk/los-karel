@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -7,16 +7,20 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function OrderConfirmationClient({ orderId }: { orderId: string }) {
   const { clearCart } = useCart();
   const { t } = useLanguage();
+  const clearedRef = useRef(false);
 
   useEffect(() => {
-    clearCart();
+    if (!clearedRef.current) {
+      clearCart();
+      clearedRef.current = true;
+    }
   }, [clearCart]);
 
   return (
-    <section style={{ paddingTop: "10rem", paddingBottom: "8rem", background: "var(--clr-bg)", minHeight: "85vh", display: "flex", alignItems: "center" }}>
-      <div className="container" style={{ maxWidth: 650, textAlign: "center", margin: "0 auto" }}>
+    <section style={{ paddingTop: "10rem", paddingBottom: "8rem", background: "var(--clr-bg)", minHeight: "85vh", display: "flex", alignItems: "center", position: "relative", zIndex: 1 }}>
+      <div className="container" style={{ maxWidth: 650, textAlign: "center", margin: "0 auto", position: "relative", zIndex: 2 }}>
         
-        <div className="detail-block" style={{ padding: "3.5rem 2rem", border: "1px solid var(--clr-border)" }}>
+        <div className="detail-block" style={{ padding: "3.5rem 2rem", border: "1px solid var(--clr-border)", position: "relative", zIndex: 3 }}>
           <span style={{ color: "var(--clr-gold)", fontSize: "2.5rem", display: "block", marginBottom: "1rem" }}>✦</span>
           
           <div className="eyebrow" style={{ justifyContent: "center", marginBottom: "1.25rem" }}>
@@ -38,7 +42,7 @@ export default function OrderConfirmationClient({ orderId }: { orderId: string }
             border: "1px dashed var(--clr-border)",
             padding: "1.5rem",
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
             gap: "1.5rem",
             textAlign: "left",
             marginBottom: "2.5rem"
@@ -47,8 +51,8 @@ export default function OrderConfirmationClient({ orderId }: { orderId: string }
               <span style={{ fontFamily: "var(--font-title)", fontSize: "0.6rem", letterSpacing: "0.2em", color: "var(--clr-gold)", textTransform: "uppercase", display: "block", marginBottom: "0.3rem" }}>
                 {t("orderNumberLabel")}
               </span>
-              <p style={{ fontFamily: "var(--font-title)", fontSize: "1.1rem", fontWeight: 500 }}>
-                {orderId}
+              <p style={{ fontFamily: "var(--font-title)", fontSize: "1rem", fontWeight: 500, wordBreak: "break-all" }}>
+                #{orderId}
               </p>
             </div>
             <div>
@@ -61,7 +65,17 @@ export default function OrderConfirmationClient({ orderId }: { orderId: string }
             </div>
           </div>
 
-          <Link href="/collection" className="btn btn-solid" style={{ padding: "1rem 2.5rem" }}>
+          <Link
+            href="/collection"
+            className="btn btn-solid"
+            style={{
+              padding: "1rem 2.5rem",
+              position: "relative",
+              zIndex: 10,
+              display: "inline-block",
+              cursor: "pointer"
+            }}
+          >
             <span>{t("continueShoppingBtn")} →</span>
           </Link>
         </div>

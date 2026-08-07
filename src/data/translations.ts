@@ -12,6 +12,13 @@ export const dictionary = {
     navLogin: "Giriş Yap",
     navContact: "İletişim",
 
+    // Search Modal
+    searchPlaceholder: "Edisyon veya dergi makalesi arayın... (örn: İznik, Kilim)",
+    searchNoResults: "Aramanızla eşleşen sonuç bulunamadı.",
+    searchProductsSection: "Koleksiyon Parçaları",
+    searchJournalSection: "Dergi Anlatıları",
+    searchEscTip: "Kapatmak için ESC tuşuna basın",
+
     // Hero
     heroEyebrow: "KÜLTÜREL ANLATILAR · MMXXVI",
     heroHeadline1: "KÖKLERİ",
@@ -206,6 +213,13 @@ export const dictionary = {
     navAccount: "Account",
     navLogin: "Sign In",
     navContact: "Contact",
+
+    // Search Modal
+    searchPlaceholder: "Search editions or journal narratives... (e.g. İznik, Woven)",
+    searchNoResults: "No results found matching your search.",
+    searchProductsSection: "Collection Pieces",
+    searchJournalSection: "Journal Narratives",
+    searchEscTip: "Press ESC to close",
 
     // Hero
     heroEyebrow: "CULTURAL NARRATIVES · MMXXVI",

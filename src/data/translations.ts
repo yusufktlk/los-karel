@@ -19,6 +19,13 @@ export const dictionary = {
     searchJournalSection: "Dergi Anlatıları",
     searchEscTip: "Kapatmak için ESC tuşuna basın",
 
+    // Gallery Labels
+    galleryBackView: "Arka Yüz Görünümü",
+    galleryFrontView: "Ön Yüz Görünümü",
+    galleryMaleModel: "Erkek Model",
+    galleryFemaleModel: "Kadın Model",
+    galleryCollage: "Detay Kolajı",
+
     // Hero
     heroEyebrow: "KÜLTÜREL ANLATILAR · MMXXVI",
     heroHeadline1: "KÖKLERİ",
@@ -108,6 +115,10 @@ export const dictionary = {
     orderHistoryTitle: "Sipariş Geçmişim",
     noOrdersMessage: "Henüz verilmiş bir siparişiniz bulunmamaktadır.",
     logoutBtn: "Oturumu Kapat",
+    orderCodeLabel: "SIPARİŞ KODU",
+    orderDateLabel: "Tarih",
+    shippingAddressLabel: "TESLİMAT ADRESİ",
+    totalAmountLabel: "TOPLAM TUTAR",
 
     // Checkout Page
     checkoutEyebrow: "GÜVENLİ ÖDEME & SIPARİŞ",
@@ -119,7 +130,8 @@ export const dictionary = {
     addressLabel: "Teslimat Adresi",
     cityLabel: "Şehir",
     postalCodeLabel: "Posta Kodu",
-    paymentInfoTitle: "2. Ödeme Bilgileri (iyzico / Stripe Güvenli)",
+    paymentInfoTitle: "2. Kredi / Banka Kartı ile Öde",
+    paymentProtected: "🔒 iyzico 3D Secure Korumalı",
     cardNumberLabel: "Kart Numarası",
     expDateLabel: "Son Kullanma Tarihi (AA/YY)",
     cvcLabel: "Güvenlik Kodu (CVC)",
@@ -128,8 +140,8 @@ export const dictionary = {
     shippingLabel: "Kargo",
     shippingFree: "Ücretsiz Ekspres Kargo",
     totalLabel: "Genel Toplam",
-    placeOrderBtn: "Siparişi Tamamla & Öde →",
-    processingOrder: "Sipariş İşleniyor...",
+    placeOrderBtn: "iyzico Güvenli Ödeme Yap →",
+    processingOrder: "iyzico Ödemesi Yapılıyor...",
 
     // Order Confirmation Page
     confirmEyebrow: "SIPARİŞİNİZ ALINDI",
@@ -221,6 +233,13 @@ export const dictionary = {
     searchJournalSection: "Journal Narratives",
     searchEscTip: "Press ESC to close",
 
+    // Gallery Labels
+    galleryBackView: "Back View",
+    galleryFrontView: "Front View",
+    galleryMaleModel: "Male Model",
+    galleryFemaleModel: "Female Model",
+    galleryCollage: "Details Collage",
+
     // Hero
     heroEyebrow: "CULTURAL NARRATIVES · MMXXVI",
     heroHeadline1: "ROOTED IN",
@@ -310,6 +329,10 @@ export const dictionary = {
     orderHistoryTitle: "Order History",
     noOrdersMessage: "You have no past orders yet.",
     logoutBtn: "Sign Out",
+    orderCodeLabel: "ORDER CODE",
+    orderDateLabel: "Date",
+    shippingAddressLabel: "SHIPPING ADDRESS",
+    totalAmountLabel: "TOTAL AMOUNT",
 
     // Checkout Page
     checkoutEyebrow: "SECURE CHECKOUT & ORDER",
@@ -321,7 +344,8 @@ export const dictionary = {
     addressLabel: "Shipping Address",
     cityLabel: "City",
     postalCodeLabel: "Postal Code",
-    paymentInfoTitle: "2. Payment Details (iyzico / Stripe Secure)",
+    paymentInfoTitle: "2. Pay with Credit / Debit Card",
+    paymentProtected: "🔒 iyzico 3D Secure Protected",
     cardNumberLabel: "Card Number",
     expDateLabel: "Expiration Date (MM/YY)",
     cvcLabel: "Security Code (CVC)",
@@ -330,8 +354,8 @@ export const dictionary = {
     shippingLabel: "Shipping",
     shippingFree: "Free Express Shipping",
     totalLabel: "Total",
-    placeOrderBtn: "Place Order & Pay →",
-    processingOrder: "Processing Order...",
+    placeOrderBtn: "Pay Securely via iyzico →",
+    processingOrder: "Processing iyzico Payment...",
 
     // Order Confirmation Page
     confirmEyebrow: "ORDER RECEIVED",

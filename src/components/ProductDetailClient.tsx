@@ -14,11 +14,11 @@ export default function ProductDetailClient({ product, relatedProducts }: {
   const { addToCart } = useCart();
 
   const gallery = [
-    { src: product.images.back,   label: "Back View" },
-    { src: product.images.front,  label: "Front View" },
-    { src: product.images.erkek,  label: "Male Model" },
-    { src: product.images.kadin,  label: "Female Model" },
-    { src: product.images.kolaj,  label: "Details Collage" },
+    { src: product.images.back,   label: t("galleryBackView") },
+    { src: product.images.front,  label: t("galleryFrontView") },
+    { src: product.images.erkek,  label: t("galleryMaleModel") },
+    { src: product.images.kadin,  label: t("galleryFemaleModel") },
+    { src: product.images.kolaj,  label: t("galleryCollage") },
   ];
 
   const [sel, setSel] = useState(0);
@@ -133,7 +133,7 @@ export default function ProductDetailClient({ product, relatedProducts }: {
                 </div>
               </Reveal>
 
-              {/* Add to Cart Button (Connected to Cart Context) */}
+              {/* Add to Cart Button */}
               <Reveal delay={350}>
                 <button onClick={handleAddToCart}
                   className={`add-btn ${done ? "done" : size ? "ready" : ""}`}>

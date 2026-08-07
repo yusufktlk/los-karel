@@ -10,9 +10,11 @@ import { useToast } from "@/context/ToastContext";
 
 export default function CheckoutClient() {
   const { cart, totalPrice } = useCart();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { showToast } = useToast();
   const router = useRouter();
+
+  const isTR = lang === "TR";
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,14 +67,14 @@ export default function CheckoutClient() {
     const res = await processIyzicoPaymentAPI(paymentPayload);
 
     if (res?.status === "success" && res?.orderId) {
-      showToast("iyzico ödemesi başarıyla onaylandı!");
+      showToast(isTR ? "iyzico ödemesi başarıyla onaylandı!" : "iyzico payment approved successfully!");
       setTimeout(() => {
         setLoading(false);
         router.push(`/order-confirmation/${res.orderId}`);
       }, 800);
     } else {
       setLoading(false);
-      showToast(res?.message || "iyzico Ödeme hatası oluştu.");
+      showToast(res?.message || (isTR ? "iyzico Ödeme hatası oluştu." : "iyzico Payment error occurred."));
     }
   };
 
@@ -132,7 +134,7 @@ export default function CheckoutClient() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Ahmet Yılmaz"
+                      placeholder={isTR ? "Ahmet Yılmaz" : "John Doe"}
                       style={{
                         width: "100%",
                         padding: "0.9rem 1rem",
@@ -205,7 +207,7 @@ export default function CheckoutClient() {
                       rows={3}
                       value={formData.address}
                       onChange={handleChange}
-                      placeholder="Abdi İpekçi Cad. No: 42 Nişantaşı"
+                      placeholder={isTR ? "Abdi İpekçi Cad. No: 42 Nişantaşı" : "Fifth Avenue No: 42"}
                       style={{
                         width: "100%",
                         padding: "0.9rem 1rem",
@@ -231,7 +233,7 @@ export default function CheckoutClient() {
                         required
                         value={formData.city}
                         onChange={handleChange}
-                        placeholder="İstanbul"
+                        placeholder={isTR ? "İstanbul" : "New York"}
                         style={{
                           width: "100%",
                           padding: "0.9rem 1rem",
@@ -275,7 +277,7 @@ export default function CheckoutClient() {
               <div className="detail-block" style={{ padding: "2rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
                   <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1rem", fontWeight: 500, letterSpacing: "0.15em", color: "var(--clr-gold)" }}>
-                    2. Kredi / Banka Kartı ile Öde
+                    {t("paymentInfoTitle")}
                   </h3>
                   <span style={{
                     fontFamily: "var(--font-title)",
@@ -286,7 +288,7 @@ export default function CheckoutClient() {
                     color: "var(--clr-gold)",
                     padding: "0.3rem 0.6rem"
                   }}>
-                    🔒 iyzico 3D Secure Protected
+                    {t("paymentProtected")}
                   </span>
                 </div>
                 
@@ -415,7 +417,7 @@ export default function CheckoutClient() {
                 className="btn btn-solid"
                 style={{ width: "100%", padding: "1.2rem" }}
               >
-                <span>{loading ? "iyzico Ödemesi Yapılıyor..." : "iyzico Güvenli Ödeme Yap →"}</span>
+                <span>{loading ? t("processingOrder") : t("placeOrderBtn")}</span>
               </button>
             </div>
 

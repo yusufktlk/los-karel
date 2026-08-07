@@ -78,7 +78,8 @@ export const dictionary = {
 
     // About Page
     aboutHeaderEyebrow: "BİZİM HİKAYEMİZ",
-    aboutHeaderTitle: "Hakkında",
+    aboutHeaderTitle: "Hakkımızda",
+    aboutHeaderSubTitle: "LOS KAREL",
     aboutHeaderSub: "Yüzyıllık zanaatın çağdaş tasarımla buluştuğu nokta",
     visionEyebrow: "MARKA VİZYONU",
     visionTitle1: "Her Giysinin Koleksiyonluk Bir",
@@ -201,6 +202,7 @@ export const dictionary = {
     // About Page
     aboutHeaderEyebrow: "OUR STORY",
     aboutHeaderTitle: "About",
+    aboutHeaderSubTitle: "LOS KAREL",
     aboutHeaderSub: "Where centuries of craft meet contemporary design",
     visionEyebrow: "BRAND VISION",
     visionTitle1: "A Luxury Label Where Every Garment Is a",

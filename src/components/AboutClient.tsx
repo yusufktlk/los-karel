@@ -27,7 +27,7 @@ export default function AboutClient() {
     <>
       {/* ── BRAND VISION ── */}
       <section style={S.sectionAlt}>
-        <div className="container" style={{ maxWidth: 750, textAlign: "center", margin: "0 auto" }}>
+        <div className="container" style={{ maxWidth: 850, textAlign: "center", margin: "0 auto" }}>
           <Reveal>
             <div className="eyebrow" style={{ justifyContent: "center" }}>
               <div className="eyebrow-line" />
@@ -37,16 +37,24 @@ export default function AboutClient() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 300, lineHeight: 1.4, marginBottom: "1.5rem", textAlign: "center" }}>
+            <h2 style={{
+              fontFamily: "var(--font-title)",
+              fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)",
+              fontWeight: 400,
+              lineHeight: 1.4,
+              marginBottom: "1.75rem",
+              textAlign: "center",
+              color: "var(--clr-text)"
+            }}>
               {t("visionTitle1")}{" "}
-              <span style={{ fontStyle: "italic", background: "linear-gradient(135deg, var(--clr-gold), var(--clr-gold2), var(--clr-gold))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span className="serif-italic" style={{ color: "var(--clr-gold)", fontStyle: "italic", display: "inline-block" }}>
                 {t("visionTitle2")}
               </span>
             </h2>
           </Reveal>
 
           <Reveal delay={200}>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem", fontWeight: 300, color: "var(--clr-muted)", lineHeight: 2, textAlign: "center" }}>
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: "0.95rem", fontWeight: 300, color: "var(--clr-muted)", lineHeight: 2, textAlign: "center", maxWidth: 720, margin: "0 auto" }}>
               {t("visionDesc")}
             </p>
           </Reveal>
@@ -63,7 +71,7 @@ export default function AboutClient() {
                 <span className="eyebrow-text">{t("valuesMainEyebrow")}</span>
                 <div className="eyebrow-line" />
               </div>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 300, textAlign: "center" }}>
+              <h2 style={{ fontFamily: "var(--font-title)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 400, textAlign: "center" }}>
                 {t("valuesMainTitle")}
               </h2>
             </div>
@@ -73,10 +81,10 @@ export default function AboutClient() {
             {values.map((value, i) => (
               <Reveal key={i} delay={i * 120}>
                 <div className="detail-block" style={{ padding: "2rem", height: "100%", textAlign: "center" }}>
-                  <span style={{ fontFamily: "var(--font-serif)", color: "var(--clr-gold)", fontSize: "1.5rem", display: "block", marginBottom: "1rem", opacity: 0.7 }}>
+                  <span style={{ fontFamily: "var(--font-title)", color: "var(--clr-gold)", fontSize: "1.25rem", display: "block", marginBottom: "1rem", opacity: 0.8 }}>
                     {value.num}
                   </span>
-                  <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", fontWeight: 300, marginBottom: "1rem", textAlign: "center" }}>
+                  <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.25rem", fontWeight: 500, marginBottom: "1rem", textAlign: "center" }}>
                     {value.title}
                   </h3>
                   <p style={{ fontFamily: "var(--font-sans)", fontSize: "0.85rem", fontWeight: 300, color: "var(--clr-muted)", lineHeight: 1.8 }}>
@@ -99,9 +107,9 @@ export default function AboutClient() {
                 <span className="eyebrow-text">{t("narrativesEyebrow")}</span>
                 <div className="eyebrow-line" />
               </div>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 300, textAlign: "center" }}>
+              <h2 style={{ fontFamily: "var(--font-title)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 400, textAlign: "center" }}>
                 {t("narrativesTitle1")}{" "}
-                <span style={{ fontStyle: "italic", background: "linear-gradient(135deg, var(--clr-gold), var(--clr-gold2), var(--clr-gold))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <span className="serif-italic" style={{ color: "var(--clr-gold)" }}>
                   {t("narrativesTitle2")}
                 </span>
               </h2>
@@ -122,10 +130,10 @@ export default function AboutClient() {
                   }}
                 >
                   <div>
-                    <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", fontWeight: 300 }}>
+                    <h3 style={{ fontFamily: "var(--font-title)", fontSize: "1.15rem", fontWeight: 500 }}>
                       {item.title}
                     </h3>
-                    <p style={{ fontFamily: "var(--font-sans)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--clr-gold)", opacity: 0.6, marginTop: "0.35rem" }}>
+                    <p style={{ fontFamily: "var(--font-sans)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--clr-gold)", opacity: 0.8, marginTop: "0.35rem" }}>
                       {item.period}
                     </p>
                   </div>
@@ -151,7 +159,7 @@ export default function AboutClient() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 300, marginBottom: "1.5rem", textAlign: "center" }}>
+            <h2 style={{ fontFamily: "var(--font-title)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 400, marginBottom: "1.5rem", textAlign: "center" }}>
               {t("qualityTitle")}
             </h2>
           </Reveal>
@@ -187,7 +195,7 @@ export default function AboutClient() {
             <span style={{ color: "var(--clr-gold)", fontSize: "1.2rem", display: "block", marginBottom: "1rem" }}>✦</span>
           </Reveal>
           <Reveal delay={100}>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", fontWeight: 300, marginBottom: "1rem", textAlign: "center" }}>
+            <h2 style={{ fontFamily: "var(--font-title)", fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", fontWeight: 400, marginBottom: "1rem", textAlign: "center" }}>
               {t("ctaTitle")}
             </h2>
           </Reveal>

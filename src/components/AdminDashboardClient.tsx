@@ -3,12 +3,21 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Reveal from "@/components/Reveal";
-import { fetchAdminStatsAPI, fetchAdminOrdersAPI, updateOrderStatusAPI, fetchProductsAPI } from "@/services/api";
+import {
+  fetchAdminStatsAPI,
+  fetchAdminOrdersAPI,
+  updateOrderStatusAPI,
+  fetchProductsAPI,
+  uploadProductImageAPI,
+  createProductAPI,
+} from "@/services/api";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import { Product } from "@/data/products";
 
 export default function AdminDashboardClient() {
   const { user, isAuthenticated } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"orders" | "products">("orders");
@@ -16,6 +25,20 @@ export default function AdminDashboardClient() {
   const [orders, setOrders] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // New Product Modal Form State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [backFile, setBackFile] = useState<File | null>(null);
+  const [frontFile, setFrontFile] = useState<File | null>(null);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    slug: "",
+    price: "1290",
+    inspiration: "Inspired by Ottoman Artistry · MMXXVI",
+    description: "",
+    story: "",
+  });
 
   useEffect(() => {
     // Route guard: Redirect if not logged in or not ADMIN
@@ -47,6 +70,53 @@ export default function AdminDashboardClient() {
     await updateOrderStatusAPI(orderId, newStatus);
   };
 
+  const handleCreateProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    let backImageUrl = "/products/iznik_heritage/back.png";
+    let frontImageUrl = "/products/iznik_heritage/front.png";
+
+    if (backFile) {
+      const backRes = await uploadProductImageAPI(backFile);
+      if (backRes?.imageUrl) backImageUrl = backRes.imageUrl;
+    }
+
+    if (frontFile) {
+      const frontRes = await uploadProductImageAPI(frontFile);
+      if (frontRes?.imageUrl) frontImageUrl = frontRes.imageUrl;
+    }
+
+    const payload = {
+      name: newProduct.name,
+      slug: newProduct.slug || newProduct.name.toLowerCase().replace(/\s+/g, "-"),
+      price: parseFloat(newProduct.price),
+      inspiration: newProduct.inspiration,
+      description: newProduct.description || newProduct.name,
+      story: newProduct.story || newProduct.description,
+      backImage: backImageUrl,
+      frontImage: frontImageUrl,
+      sizes: ["S", "M", "L", "XL"],
+    };
+
+    const res = await createProductAPI(payload);
+    setSubmitting(false);
+
+    if (res) {
+      showToast("Yeni edisyon ürün başarıyla yayınlandı!");
+      setIsModalOpen(false);
+      setNewProduct({ name: "", slug: "", price: "1290", inspiration: "Inspired by Ottoman Artistry · MMXXVI", description: "", story: "" });
+      setBackFile(null);
+      setFrontFile(null);
+      
+      // Refresh products list
+      const updatedProducts = await fetchProductsAPI();
+      if (updatedProducts) setProducts(updatedProducts);
+    } else {
+      showToast("Ürün eklenirken bir hata oluştu", "info");
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "DELIVERED":
@@ -75,7 +145,7 @@ export default function AdminDashboardClient() {
             </h1>
           </div>
 
-          <div style={{ display: "flex", gap: "1rem" }}>
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => setActiveTab("orders")}
               style={{
@@ -109,6 +179,16 @@ export default function AdminDashboardClient() {
             >
               ÜRÜN KATALOĞU ({products.length})
             </button>
+
+            {activeTab === "products" && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="btn btn-solid"
+                style={{ padding: "0.75rem 1.5rem", fontSize: "0.75rem" }}
+              >
+                <span>+ Yeni Edisyon Ekle</span>
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -275,9 +355,19 @@ export default function AdminDashboardClient() {
             </div>
           ) : (
             <div>
-              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", fontWeight: 300, marginBottom: "2rem" }}>
-                Aktif Edisyonlar & Stok Yönetimi
-              </h2>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.6rem", fontWeight: 300 }}>
+                  Aktif Edisyonlar & Stok Yönetimi
+                </h2>
+
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="btn btn-solid"
+                  style={{ padding: "0.75rem 1.5rem", fontSize: "0.75rem" }}
+                >
+                  <span>+ Yeni Edisyon Ekle</span>
+                </button>
+              </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "2.5rem" }}>
                 {products.map((p) => (
@@ -311,6 +401,194 @@ export default function AdminDashboardClient() {
           )}
         </div>
       </section>
+
+      {/* NEW PRODUCT MODAL */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "rgba(10, 10, 10, 0.92)",
+            backdropFilter: "blur(10px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            className="detail-block"
+            style={{
+              maxWidth: 600,
+              width: "100%",
+              padding: "2.5rem",
+              border: "1px solid var(--clr-gold)",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h2 style={{ fontFamily: "var(--font-title)", fontSize: "1.2rem", letterSpacing: "0.15em", color: "var(--clr-gold)" }}>
+                Yeni Edisyon Parça Ekle
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                style={{ background: "none", border: "none", color: "var(--clr-muted)", fontSize: "1.2rem", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateProductSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <div>
+                <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
+                  Edisyon Adı *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                  placeholder="Gülhane Heritage Tee"
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem 1rem",
+                    background: "var(--clr-bg)",
+                    border: "1px solid var(--clr-border)",
+                    color: "var(--clr-text)",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.85rem",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
+                    Fiyat (₺) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={newProduct.price}
+                    onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                    placeholder="1290"
+                    style={{
+                      width: "100%",
+                      padding: "0.8rem 1rem",
+                      background: "var(--clr-bg)",
+                      border: "1px solid var(--clr-border)",
+                      color: "var(--clr-text)",
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "0.85rem",
+                      outline: "none",
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
+                    İlham Dönemi *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={newProduct.inspiration}
+                    onChange={(e) => setNewProduct({ ...newProduct, inspiration: e.target.value })}
+                    placeholder="Inspired by Gülhane · XVII. YY"
+                    style={{
+                      width: "100%",
+                      padding: "0.8rem 1rem",
+                      background: "var(--clr-bg)",
+                      border: "1px solid var(--clr-border)",
+                      color: "var(--clr-text)",
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "0.85rem",
+                      outline: "none",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-muted)", display: "block", marginBottom: "0.4rem" }}>
+                  Edisyon Hikayesi & Anlatısı *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={newProduct.story}
+                  onChange={(e) => setNewProduct({ ...newProduct, story: e.target.value })}
+                  placeholder="Osmanlı Saray bahçelerinin zarafetini taşıyan derin anlatı..."
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem 1rem",
+                    background: "var(--clr-bg)",
+                    border: "1px solid var(--clr-border)",
+                    color: "var(--clr-text)",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.85rem",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              {/* Back Image File Input */}
+              <div>
+                <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-gold)", display: "block", marginBottom: "0.4rem" }}>
+                  📷 Arka Yüz Görseli (Back Art) *
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setBackFile(e.target.files ? e.target.files[0] : null)}
+                  style={{
+                    width: "100%",
+                    padding: "0.6rem 1rem",
+                    background: "var(--clr-bg)",
+                    border: "1px dashed var(--clr-border)",
+                    color: "var(--clr-text)",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.8rem",
+                  }}
+                />
+              </div>
+
+              {/* Front Image File Input */}
+              <div>
+                <label style={{ fontFamily: "var(--font-title)", fontSize: "0.62rem", letterSpacing: "0.2em", color: "var(--clr-gold)", display: "block", marginBottom: "0.4rem" }}>
+                  📷 Ön Yüz Görseli (Front Logo View)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFrontFile(e.target.files ? e.target.files[0] : null)}
+                  style={{
+                    width: "100%",
+                    padding: "0.6rem 1rem",
+                    background: "var(--clr-bg)",
+                    border: "1px dashed var(--clr-border)",
+                    color: "var(--clr-text)",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.8rem",
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-solid"
+                style={{ width: "100%", padding: "1.1rem", marginTop: "1rem" }}
+              >
+                <span>{submitting ? "Yükleniyor & Yayınlanıyor..." : "Edisyonu Yayınla →"}</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }

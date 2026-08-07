@@ -4,12 +4,35 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Iyzipay = require("iyzipay");
 const rateLimit = require("express-rate-limit");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const { PrismaClient } = require("@prisma/client");
 
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || "los_karel_luxury_secret_key_2026";
+
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Multer Storage Configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, "garment-" + uniqueSuffix + ext);
+  },
+});
+
+const upload = multer({ storage });
 
 // iyzico Configuration
 const iyzipay = new Iyzipay({
@@ -20,6 +43,7 @@ const iyzipay = new Iyzipay({
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(uploadsDir));
 
 // ── SECURITY & RATE LIMITING ──
 const apiLimiter = rateLimit({
@@ -98,12 +122,12 @@ app.get("/api/products", async (req, res) => {
       images: {
         back: p.backImage,
         front: p.frontImage,
-        tshirt: p.tshirtImage,
-        erkek: p.erkekImage,
-        kadin: p.kadinImage,
-        kolaj: p.kolajImage,
+        tshirt: p.tshirtImage || p.backImage,
+        erkek: p.erkekImage || p.backImage,
+        kadin: p.kadinImage || p.frontImage,
+        kolaj: p.kolajImage || p.backImage,
       },
-      collection: p.collection.nameTR,
+      collection: p.collection ? p.collection.nameTR : "Heritage Collection",
     }));
     res.json(formatted);
   } catch (error) {
@@ -127,12 +151,12 @@ app.get("/api/products/:slug", async (req, res) => {
       images: {
         back: p.backImage,
         front: p.frontImage,
-        tshirt: p.tshirtImage,
-        erkek: p.erkekImage,
-        kadin: p.kadinImage,
-        kolaj: p.kolajImage,
+        tshirt: p.tshirtImage || p.backImage,
+        erkek: p.erkekImage || p.backImage,
+        kadin: p.kadinImage || p.frontImage,
+        kolaj: p.kolajImage || p.backImage,
       },
-      collection: p.collection.nameTR,
+      collection: p.collection ? p.collection.nameTR : "Heritage Collection",
     };
     res.json(formatted);
   } catch (error) {
@@ -173,7 +197,7 @@ app.get("/api/journal/:slug", async (req, res) => {
   }
 });
 
-// ── USER ORDERS ENDPOINT (Public by email query) ──
+// ── USER ORDERS ENDPOINT ──
 app.get("/api/user/orders", async (req, res) => {
   try {
     const { email } = req.query;
@@ -341,6 +365,51 @@ app.post("/api/payment/checkout", async (req, res) => {
 });
 
 // ── PROTECTED ADMIN ENDPOINTS (RBAC & JWT REQUIRED) ──
+app.post("/api/admin/upload", verifyAdminToken, upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No image file provided" });
+  const imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+  res.json({ imageUrl });
+});
+
+app.post("/api/admin/products", verifyAdminToken, async (req, res) => {
+  try {
+    const { name, slug, price, description, story, inspiration, sizes, details, tags, backImage, frontImage } = req.body;
+
+    let collection = await prisma.collection.findFirst();
+    if (!collection) {
+      collection = await prisma.collection.create({
+        data: { slug: "heritage-collection", nameTR: "Heritage Collection", nameEN: "Heritage Collection" },
+      });
+    }
+
+    const newProduct = await prisma.product.create({
+      data: {
+        slug: slug || name.toLowerCase().replace(/\s+/g, "-"),
+        name,
+        collectionId: collection.id,
+        price: parseFloat(price),
+        currency: "₺",
+        description: description || name,
+        story: story || description || name,
+        inspiration: inspiration || "Inspired by Anatolian Heritage",
+        sizes: JSON.stringify(sizes || ["S", "M", "L", "XL"]),
+        details: JSON.stringify(details || ["250 GSM premium pamuk", "Oversize kesim", "Türkiye'de üretilmiştir"]),
+        tags: JSON.stringify(tags || ["Heritage", "New"]),
+        backImage: backImage || "/products/iznik_heritage/back.png",
+        frontImage: frontImage || "/products/iznik_heritage/front.png",
+        tshirtImage: backImage || "/products/iznik_heritage/back.png",
+        erkekImage: backImage || "/products/iznik_heritage/back.png",
+        kadinImage: frontImage || "/products/iznik_heritage/front.png",
+        kolajImage: backImage || "/products/iznik_heritage/back.png",
+      },
+    });
+
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get("/api/admin/stats", verifyAdminToken, async (req, res) => {
   try {
     const totalOrders = await prisma.order.count();

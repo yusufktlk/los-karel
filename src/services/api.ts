@@ -87,6 +87,37 @@ export async function fetchUserOrdersAPI(email: string) {
   }
 }
 
+export async function uploadProductImageAPI(file: File) {
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+      method: "POST",
+      headers: getAuthHeader(),
+      body: formData,
+    });
+    if (!res.ok) throw new Error("Upload error");
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function createProductAPI(productPayload: any) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/products`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      body: JSON.stringify(productPayload),
+    });
+    if (!res.ok) throw new Error("Create product error");
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchAdminStatsAPI() {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/stats`, {

@@ -55,10 +55,22 @@ export default function Footer() {
       </div>
 
       <div className="container">
-        <div className="footer-bottom" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-          <span className="footer-copy">© {new Date().getFullYear()} LOS KAREL. {t("footerRights")}</span>
+        <div
+          className="footer-bottom"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            gap: "1rem",
+            width: "100%",
+          }}
+        >
+          {/* Left Column */}
+          <span className="footer-copy" style={{ textAlign: "left" }}>
+            © {new Date().getFullYear()} LOS KAREL. {t("footerRights")}
+          </span>
           
-          {/* Centered Instagram Icon Only */}
+          {/* Center Column: Perfectly Mathematical Centered Instagram Icon */}
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <a
               href="https://instagram.com/los.karel"
@@ -67,12 +79,13 @@ export default function Footer() {
               className="footer-link"
               title="Instagram: @los.karel"
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 marginBottom: 0,
                 color: "var(--clr-gold)",
-                textDecoration: "none"
+                textDecoration: "none",
+                transition: "transform 0.3s ease, color 0.3s ease",
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -83,7 +96,10 @@ export default function Footer() {
             </a>
           </div>
 
-          <span className="footer-copy">EST. MMXXVI</span>
+          {/* Right Column */}
+          <span className="footer-copy" style={{ textAlign: "right" }}>
+            EST. MMXXVI
+          </span>
         </div>
       </div>
     </footer>

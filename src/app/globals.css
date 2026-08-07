@@ -182,14 +182,17 @@ img { display: block; max-width: 100%; height: auto; }
 .nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
-  transition: all 0.4s ease;
-  border-bottom: 1px solid transparent;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(7, 7, 7, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(196, 168, 124, 0.1);
 }
 .nav.scrolled {
-  background: rgba(7, 7, 7, 0.92);
-  backdrop-filter: blur(16px);
-  border-color: var(--clr-border);
+  background: rgba(7, 7, 7, 0.94);
+  backdrop-filter: blur(20px);
+  border-bottom-color: var(--clr-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 .nav-inner {
   max-width: 1200px;

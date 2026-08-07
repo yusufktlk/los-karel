@@ -23,7 +23,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -31,7 +31,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
+      <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
         <div className="container nav-inner">
           {/* Brand Logo */}
           <Link href="/" className="nav-logo">

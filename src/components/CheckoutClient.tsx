@@ -53,6 +53,7 @@ export default function CheckoutClient() {
       },
       items: cart.map((item) => ({
         productId: item.product.id,
+        slug: item.product.slug,
         name: item.product.name,
         size: item.size,
         quantity: item.quantity,

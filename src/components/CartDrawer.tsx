@@ -225,13 +225,14 @@ export default function CartDrawer() {
                 : "Taxes included. Shipping calculated at checkout."}
             </p>
 
-            <button
-              onClick={() => alert(isTR ? "Ödeme sistemine yönlendiriliyorsunuz..." : "Redirecting to checkout...")}
+            <Link
+              href="/checkout"
+              onClick={closeCart}
               className="btn btn-solid"
-              style={{ width: "100%", padding: "1.1rem" }}
+              style={{ width: "100%", padding: "1.1rem", textDecoration: "none" }}
             >
               <span>{isTR ? "ÖDEMEYE GEÇ →" : "PROCEED TO CHECKOUT →"}</span>
-            </button>
+            </Link>
           </div>
         )}
       </div>

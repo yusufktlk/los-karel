@@ -3,8 +3,11 @@ export const dictionary = {
     // Navbar
     navHome: "Anasayfa",
     navCollection: "Koleksiyon",
+    navLookbook: "Lookbook",
+    navJournal: "Dergi",
     navAbout: "Hakkımızda",
     navShop: "Mağaza",
+    navWishlist: "Favoriler",
     navContact: "İletişim",
 
     // Hero
@@ -60,6 +63,55 @@ export const dictionary = {
     colFutureEyebrow: "GELECEK BÖLÜMLER",
     colFutureTitle: "Yeni Koleksiyonlar Yakında",
     colFutureDesc: "İskandinav rünleri, Japon wabi-sabi ve modern grafik sanattan ilham alan yeni parçalar üretim aşamasındadır.",
+
+    // Lookbook Page
+    lookbookEyebrow: "GÖRSEL EDİSYONLAR",
+    lookbookTitle: "Lookbook",
+    lookbookDesc: "LOS KAREL edisyonlarının ışık, gölge ve kumaşla kurduğu editoryal görsel diyalog.",
+    lookbookShopLook: "Parçayı İncele →",
+
+    // Journal Page
+    journalEyebrow: "KÜLTÜR & MOTİF DERGİSİ",
+    journalTitle: "Journal",
+    journalDesc: "Geçmişin sembolik dili, zanaat tarihleri ve giyilebilir sanat üzerine derinlemesine yazılar.",
+    readArticle: "Makaleyi Oku →",
+
+    // Wishlist Page
+    wishlistEyebrow: "ÖZEL İSTEK LİSTESİ",
+    wishlistTitle: "Favorilerim",
+    wishlistEmptyTitle: "FAVORİ LİSTENİZ BOŞ",
+    wishlistEmptyDesc: "Beğendiğiniz parçaları kartların üzerindeki kalp ikonuna tıklayarak listenize ekleyebilirsiniz.",
+
+    // Checkout Page
+    checkoutEyebrow: "GÜVENLİ ÖDEME & SIPARİŞ",
+    checkoutTitle: "Ödeme Sayfası",
+    contactInfoTitle: "1. İletişim & Teslimat Bilgileri",
+    fullNameLabel: "Ad Soyad",
+    emailLabel: "E-posta Adresi",
+    phoneLabel: "Telefon Numarası",
+    addressLabel: "Teslimat Adresi",
+    cityLabel: "Şehir",
+    postalCodeLabel: "Posta Kodu",
+    paymentInfoTitle: "2. Ödeme Bilgileri (iyzico / Stripe Güvenli)",
+    cardNumberLabel: "Kart Numarası",
+    expDateLabel: "Son Kullanma Tarihi (AA/YY)",
+    cvcLabel: "Güvenlik Kodu (CVC)",
+    orderSummaryTitle: "Sipariş Özeti",
+    subtotalLabel: "Ara Toplam",
+    shippingLabel: "Kargo",
+    shippingFree: "Ücretsiz Ekspres Kargo",
+    totalLabel: "Genel Toplam",
+    placeOrderBtn: "Siparişi Tamamla & Öde →",
+    processingOrder: "Sipariş İşleniyor...",
+
+    // Order Confirmation Page
+    confirmEyebrow: "SIPARİŞİNİZ ALINDI",
+    confirmTitle: "Teşekkür Ederiz",
+    confirmSub: "Siparişiniz başarıyla alındı ve üretim/hazırlık sürecine devredildi.",
+    orderNumberLabel: "Sipariş Numarası",
+    estimatedDeliveryLabel: "Tahmini Teslimat",
+    estimatedDeliveryValue: "3 – 5 İş Günü",
+    continueShoppingBtn: "Alışverişe Devam Et",
 
     // Product Detail Page
     breadcrumbHome: "Anasayfa",
@@ -126,8 +178,11 @@ export const dictionary = {
     // Navbar
     navHome: "Home",
     navCollection: "Collection",
+    navLookbook: "Lookbook",
+    navJournal: "Journal",
     navAbout: "About",
     navShop: "Shop",
+    navWishlist: "Wishlist",
     navContact: "Contact",
 
     // Hero
@@ -183,6 +238,55 @@ export const dictionary = {
     colFutureEyebrow: "FUTURE CHAPTERS",
     colFutureTitle: "More Collections Coming Soon",
     colFutureDesc: "Drops inspired by Nordic runes, Japanese wabi-sabi, and modern graphic art are currently in production.",
+
+    // Lookbook Page
+    lookbookEyebrow: "VISUAL EDITIONS",
+    lookbookTitle: "Lookbook",
+    lookbookDesc: "The editorial visual dialogue between LOS KAREL editions, light, shadow and texture.",
+    lookbookShopLook: "View Piece →",
+
+    // Journal Page
+    journalEyebrow: "CULTURE & MOTIF JOURNAL",
+    journalTitle: "Journal",
+    journalDesc: "In-depth articles on ancient symbolic languages, craft histories, and wearable art.",
+    readArticle: "Read Article →",
+
+    // Wishlist Page
+    wishlistEyebrow: "PRIVATE WISHLIST",
+    wishlistTitle: "Wishlist",
+    wishlistEmptyTitle: "YOUR WISHLIST IS EMPTY",
+    wishlistEmptyDesc: "Save pieces you admire by clicking the heart icon on product cards.",
+
+    // Checkout Page
+    checkoutEyebrow: "SECURE CHECKOUT & ORDER",
+    checkoutTitle: "Checkout",
+    contactInfoTitle: "1. Contact & Shipping Information",
+    fullNameLabel: "Full Name",
+    emailLabel: "Email Address",
+    phoneLabel: "Phone Number",
+    addressLabel: "Shipping Address",
+    cityLabel: "City",
+    postalCodeLabel: "Postal Code",
+    paymentInfoTitle: "2. Payment Details (iyzico / Stripe Secure)",
+    cardNumberLabel: "Card Number",
+    expDateLabel: "Expiration Date (MM/YY)",
+    cvcLabel: "Security Code (CVC)",
+    orderSummaryTitle: "Order Summary",
+    subtotalLabel: "Subtotal",
+    shippingLabel: "Shipping",
+    shippingFree: "Free Express Shipping",
+    totalLabel: "Total",
+    placeOrderBtn: "Place Order & Pay →",
+    processingOrder: "Processing Order...",
+
+    // Order Confirmation Page
+    confirmEyebrow: "ORDER RECEIVED",
+    confirmTitle: "Thank You",
+    confirmSub: "Your order has been successfully placed and routed to production.",
+    orderNumberLabel: "Order Reference",
+    estimatedDeliveryLabel: "Estimated Delivery",
+    estimatedDeliveryValue: "3 – 5 Business Days",
+    continueShoppingBtn: "Continue Exploring",
 
     // Product Detail Page
     breadcrumbHome: "Home",

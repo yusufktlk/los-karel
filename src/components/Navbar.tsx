@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
   const { openCart, totalItems } = useCart();
+  const { totalWishlistItems } = useWishlist();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -34,12 +36,15 @@ export default function Navbar() {
             <Link href="/collection" className="nav-link-item">
               {t("navCollection")}
             </Link>
+            <Link href="/journal" className="nav-link-item">
+              {t("navJournal")}
+            </Link>
             <Link href="/about" className="nav-link-item">
               {t("navAbout")}
             </Link>
           </div>
 
-          {/* Absolute Centered Logo - Guaranteed True Center */}
+          {/* Absolute Centered Logo */}
           <div style={{
             position: "absolute",
             left: "50%",
@@ -53,8 +58,38 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Right Navigation Links with Shop (Cart Trigger) & Compact Language Selector */}
+          {/* Right Navigation Links: Wishlist, Shop & Language */}
           <div className="nav-links" style={{ gap: "1.25rem" }}>
+            {/* Wishlist Link */}
+            <Link href="/wishlist" className="nav-link-item" style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                {totalWishlistItems > 0 && (
+                  <span style={{
+                    position: "absolute",
+                    top: "-6px",
+                    right: "-8px",
+                    background: "var(--clr-gold)",
+                    color: "var(--clr-bg)",
+                    fontSize: "0.55rem",
+                    fontWeight: 600,
+                    width: "14px",
+                    height: "14px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "var(--font-sans)"
+                  }}>
+                    {totalWishlistItems}
+                  </span>
+                )}
+              </div>
+            </Link>
+
+            {/* Shop Cart Trigger */}
             <button
               onClick={openCart}
               className="nav-link-item"
@@ -98,7 +133,7 @@ export default function Navbar() {
               </div>
             </button>
 
-            {/* Tight Divider & Language Switcher */}
+            {/* Language Switcher */}
             <div style={{
               display: "flex",
               alignItems: "center",
@@ -141,7 +176,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Hamburger menu for Mobile */}
+          {/* Hamburger menu */}
           <button className="hamburger" onClick={() => setOpen(!open)} aria-label="Menu">
             <span style={open ? { transform: "rotate(45deg) translate(4px, 5px)" } : {}} />
             <span style={open ? { opacity: 0 } : {}} />
@@ -152,15 +187,12 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div className={`mobile-menu ${open ? "open" : ""}`}>
-        <Link href="/" onClick={() => setOpen(false)}>
-          {t("navHome")}
-        </Link>
-        <Link href="/collection" onClick={() => setOpen(false)}>
-          {t("navCollection")}
-        </Link>
-        <Link href="/about" onClick={() => setOpen(false)}>
-          {t("navAbout")}
-        </Link>
+        <Link href="/" onClick={() => setOpen(false)}>{t("navHome")}</Link>
+        <Link href="/collection" onClick={() => setOpen(false)}>{t("navCollection")}</Link>
+        <Link href="/journal" onClick={() => setOpen(false)}>{t("navJournal")}</Link>
+        <Link href="/about" onClick={() => setOpen(false)}>{t("navAbout")}</Link>
+        <Link href="/wishlist" onClick={() => setOpen(false)}>{t("navWishlist")} ({totalWishlistItems})</Link>
+        
         <button
           onClick={() => { setOpen(false); openCart(); }}
           style={{
@@ -170,13 +202,10 @@ export default function Navbar() {
             fontFamily: "var(--font-title)",
             fontSize: "1.5rem",
             letterSpacing: "0.2em",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem"
+            cursor: "pointer"
           }}
         >
-          <span>{t("navShop")} ({totalItems})</span>
+          {t("navShop")} ({totalItems})
         </button>
 
         {/* Mobile Language Switcher */}
@@ -209,20 +238,6 @@ export default function Navbar() {
           >
             EN
           </button>
-        </div>
-
-        <div style={{ position: "absolute", bottom: "3rem", display: "flex", gap: "2rem" }}>
-          <a href="https://instagram.com/loskarel" target="_blank" rel="noopener noreferrer"
-            style={{ fontFamily: "var(--font-title)", fontSize: "0.65rem", letterSpacing: "0.25em",
-              textTransform: "uppercase", color: "var(--clr-muted)" }}>
-            Instagram
-          </a>
-          <span style={{ color: "var(--clr-gold)", opacity: 0.5 }}>✦</span>
-          <a href="mailto:info@loskarel.com"
-            style={{ fontFamily: "var(--font-title)", fontSize: "0.65rem", letterSpacing: "0.25em",
-              textTransform: "uppercase", color: "var(--clr-muted)" }}>
-            {t("navContact")}
-          </a>
         </div>
       </div>
     </>
